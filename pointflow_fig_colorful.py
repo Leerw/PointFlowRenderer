@@ -1,4 +1,10 @@
 import numpy as np
+import open3d as o3d
+
+def read_pc(path):
+    pcd = o3d.io.read_point_cloud(path)
+    points = np.array(pcd.points).astype(np.float32)
+    return points
 
 def standardize_bbox(pcl, points_per_object):
     pt_indices = np.random.choice(pcl.shape[0], points_per_object, replace=False)
@@ -49,7 +55,8 @@ xml_head = \
 xml_ball_segment = \
 """
     <shape type="sphere">
-        <float name="radius" value="0.025"/>
+        <!--float name="radius" value="0.025"/>-->
+        <float name="radius" value="0.01"/>
         <transform name="toWorld">
             <translate x="{}" y="{}" z="{}"/>
         </transform>
@@ -89,6 +96,7 @@ def colormap(x,y,z):
     return [vec[0], vec[1], vec[2]]
 xml_segments = [xml_head]
 
+# TODO: render point clouds and save rendered results.
 pcl = np.load('chair_pcl.npy')
 pcl = standardize_bbox(pcl, 2048)
 pcl = pcl[:,[2,0,1]]
